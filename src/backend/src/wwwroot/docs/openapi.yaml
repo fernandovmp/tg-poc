@@ -1,0 +1,164 @@
+---
+openapi: 3.0.2
+info:
+  title: TG-POC TodoList
+  version: 1.0.0
+  description: API de lista de tarefas usada em uma POC para o TG
+paths:
+  /todos:
+    get:
+      tags:
+        - Tarefas
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Tarefa"
+          description: Uma lista com todas as tarefas
+      summary: Lista as tarefas
+      description: Lista todas as tarefas existentes
+    post:
+      requestBody:
+        description: Informações da tarefa
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tarefa-Dados"
+        required: true
+      tags:
+        - Tarefas
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tarefa"
+              examples:
+                Tarefa criada:
+                  value:
+                    id: 1
+                    titulo: Aguar as plantas
+                    status: incompleto
+          description: A tarefa foi criada com sucesso
+        "400":
+          $ref: "#/components/responses/Erro-Validacao"
+      summary: Cria uma tarefa
+      description: Cria uma nova tarefa
+  /todos/{id}:
+    get:
+      tags:
+        - Tarefas
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Tarefa"
+          description: Um objeto com os dados da tarefa
+        "404":
+          description: A tarefa com esse **id** não existe
+      summary: Retorna uma tarefa pelo seu id
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Tarefa-Dados"
+        required: true
+      tags:
+        - Tarefas
+      responses:
+        "204":
+          description: A tarefa foi atualizada
+        "400":
+          $ref: "#/components/responses/Erro-Validacao"
+        "404":
+          description: Tarefa não existe
+      summary: Atualiza uma tarefa
+      description: Atualiza os dados de uma tarefa
+    delete:
+      tags:
+        - Tarefas
+      responses:
+        "204":
+          description: A tarefa foi deletada
+        "404":
+          description: A tarefa a ser deletada não existe
+      summary: Deleta uma tarefa
+      description: Deleta uma tarefa pelo seu **id**
+    parameters:
+      - name: id
+        description: Id da tarefa
+        schema:
+          type: integer
+        in: path
+        required: true
+components:
+  schemas:
+    Tarefa:
+      title: Tarefa
+      description: ""
+      type: object
+      properties:
+        id:
+          format: int32
+          type: integer
+        titulo:
+          type: string
+        status:
+          type: string
+      example:
+        id: 1
+        titulo: Aguar as plantas
+        status: terminado
+    Tarefa-Dados:
+      title: Tarefa-Dados
+      description: ""
+      type: object
+      properties:
+        titulo:
+          type: string
+        status:
+          type: string
+      example:
+        titulo: Aguar as plantas
+        status: incompleto
+    Erro-Validacao:
+      title: Erro-Validacao
+      description: Um objeto contendo os dados do erro e uma lista com os erros de
+        validação
+      type: object
+      properties:
+        status:
+          format: int32
+          type: integer
+        mensagem:
+          type: string
+        erros:
+          type: array
+          items:
+            type: object
+            properties:
+              erro:
+                type: string
+              mensagem:
+                type: string
+              campo:
+                type: string
+      example:
+        status: 400
+        mensagem: Ocorreu um ou mais erros de validação
+        erros:
+          - erro: maxlenght
+            mensagem: O campo Título não pode ser maior que 20 caractéres
+            campo: titulo
+  responses:
+    Erro-Validacao:
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Erro-Validacao"
+      description: Ocorreu um ou mais erros de validação
