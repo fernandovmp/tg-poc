@@ -7,6 +7,7 @@
   "database": "TodoList",
   "synchronize": false,
   "logging": false,
+  "entities": ["src/entities/**/*.ts"],
   "migrations": ["build/migration/**/*.js"],
   "cli": {
     "migrationsDir": "src/migration"
