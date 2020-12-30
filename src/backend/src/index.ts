@@ -1,8 +1,8 @@
-import express from 'express';
-import swaggerUi from 'swagger-ui-express';
 import YAML from 'yamljs';
+import express from 'express';
 import path from 'path';
 import redoc from 'redoc-express';
+import swaggerUi from 'swagger-ui-express';
 
 const app = express();
 
