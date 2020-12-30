@@ -1,14 +1,22 @@
 import 'reflect-metadata';
 
+import { createConnection, useContainer as typeOrmUseContainer } from 'typeorm';
+import express, { json } from 'express';
+import {
+    useContainer as routingControllerUseContainer,
+    useExpressServer,
+} from 'routing-controllers';
+
 import { Container } from 'typedi';
 import { EntidadeTarefa } from './entities/tarefa';
+import { TarefasController } from './features/tarefas';
 import YAML from 'yamljs';
-import express from 'express';
 import path from 'path';
 import redoc from 'redoc-express';
 import swaggerUi from 'swagger-ui-express';
 
 const app = express();
+app.use(json());
 
 const openApiPath = path.resolve(__dirname, './wwwroot/docs/openapi.yaml');
 const openApiUri = '/docs/openapi.yaml';
@@ -38,4 +46,9 @@ createConnection({
     synchronize: false,
     logging: false,
 });
+routingControllerUseContainer(Container);
+useExpressServer(app, {
+    controllers: [TarefasController],
+});
+
 app.listen(3030);
