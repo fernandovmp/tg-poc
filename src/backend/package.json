@@ -5,6 +5,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "build": "yarn tsc",
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node src/index.ts' -e ts"
   },
   "dependencies": {
