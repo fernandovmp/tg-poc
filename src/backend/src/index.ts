@@ -1,3 +1,7 @@
+import 'reflect-metadata';
+
+import { Container } from 'typedi';
+import { EntidadeTarefa } from './entities/tarefa';
 import YAML from 'yamljs';
 import express from 'express';
 import path from 'path';
@@ -22,4 +26,16 @@ app.use(
     })
 );
 
+typeOrmUseContainer(Container);
+createConnection({
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'postgres',
+    password: 'postgres1234',
+    database: 'TodoList',
+    entities: [EntidadeTarefa],
+    synchronize: false,
+    logging: false,
+});
 app.listen(3030);
