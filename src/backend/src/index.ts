@@ -2,6 +2,7 @@ import 'reflect-metadata';
 
 import express, { json } from 'express';
 
+import configuration from './setup/configuration';
 import { useOpenApiDocs } from './middlewares/openApiDocs';
 import { useRoutingController } from './setup/useRoutingController';
 import { useTypeOrm } from './setup/useTypeOrm';
@@ -13,4 +14,4 @@ useOpenApiDocs(app);
 useTypeOrm();
 useRoutingController(app);
 
-app.listen(3030);
+app.listen(configuration.port);

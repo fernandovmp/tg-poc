@@ -2,6 +2,7 @@ import { createConnection, useContainer } from 'typeorm';
 
 import { Container } from 'typedi';
 import { EntidadeTarefa } from '../entities/tarefa';
+import configuration from './configuration';
 
 export function useTypeOrm() {
     useContainer(Container);
