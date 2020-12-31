@@ -1,5 +1,6 @@
 import {
     Body,
+    Delete,
     Get,
     JsonController,
     NotFoundError,
@@ -49,5 +50,14 @@ export class TarefasController {
             throw new NotFoundError();
         }
         return tarefa;
+    }
+
+    @Delete('/:id')
+    async deleteById(@Param('id') id: number, @Res() response: Response) {
+        const tarefa = await this.tarefasRepositorio.getById(id);
+        if (!tarefa) throw new NotFoundError();
+        await this.tarefasRepositorio.deleteById(id);
+        response.status(204);
+        return null;
     }
 }

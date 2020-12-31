@@ -21,4 +21,8 @@ export class TarefasRepositorio extends Repository<ITarefaDto> {
     public getById(id: number) {
         return this.findOne(id);
     }
+
+    public deleteById(id: number) {
+        return this.delete(id);
+    }
 }
