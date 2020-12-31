@@ -14,12 +14,15 @@ import { IDadosTarefaDto, ITarefaDto } from '@todo-list/shared';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { TarefasRepositorio } from './tarefasRepositorio';
 import { Request, Response } from 'express';
+import { ControllerBase } from '../controllerBase';
 
 @JsonController('/todos')
-export class TarefasController {
+export class TarefasController extends ControllerBase {
     constructor(
         @InjectRepository() private tarefasRepositorio: TarefasRepositorio
-    ) {}
+    ) {
+        super();
+    }
 
     @Get()
     getAll(): Promise<ITarefaDto[]> {
@@ -34,13 +37,7 @@ export class TarefasController {
     ): Promise<ITarefaDto> {
         const tarefa = { id: 0, ...model };
         await this.tarefasRepositorio.add(tarefa);
-        response.status(201);
-        response.location(
-            `${request.protocol + '://' + request.get('host')}/todos/${
-                tarefa.id
-            }`
-        );
-        return tarefa;
+        return this.created(request, response, tarefa, `/todos/${tarefa.id}`);
     }
 
     @Get('/:id')
@@ -57,7 +54,6 @@ export class TarefasController {
         const tarefa = await this.tarefasRepositorio.getById(id);
         if (!tarefa) throw new NotFoundError();
         await this.tarefasRepositorio.deleteById(id);
-        response.status(204);
-        return null;
+        return this.noContent(response);
     }
 }
