@@ -1,4 +1,13 @@
-import { Body, Get, JsonController, Post, Req, Res } from 'routing-controllers';
+import {
+    Body,
+    Get,
+    JsonController,
+    NotFoundError,
+    Param,
+    Post,
+    Req,
+    Res,
+} from 'routing-controllers';
 
 import { IDadosTarefaDto, ITarefaDto } from '@todo-list/shared';
 import { InjectRepository } from 'typeorm-typedi-extensions';
@@ -12,7 +21,7 @@ export class TarefasController {
     ) {}
 
     @Get()
-    getById(): Promise<ITarefaDto[]> {
+    getAll(): Promise<ITarefaDto[]> {
         return this.tarefasRepositorio.getAll();
     }
 
@@ -30,6 +39,15 @@ export class TarefasController {
                 tarefa.id
             }`
         );
+        return tarefa;
+    }
+
+    @Get('/:id')
+    async getById(@Param('id') id: number, @Res() response: Response) {
+        const tarefa = await this.tarefasRepositorio.getById(id);
+        if (!tarefa) {
+            throw new NotFoundError();
+        }
         return tarefa;
     }
 }

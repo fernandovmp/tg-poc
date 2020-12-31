@@ -17,4 +17,8 @@ export class TarefasRepositorio extends Repository<ITarefaDto> {
     public async add(tarefa: ITarefaDto) {
         await this.insert(tarefa);
     }
+
+    public getById(id: number) {
+        return this.findOne(id);
+    }
 }
