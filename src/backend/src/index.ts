@@ -9,6 +9,7 @@ import {
 
 import { Container } from 'typedi';
 import { EntidadeTarefa } from './entities/tarefa';
+import { HttpResponseErrorHandler } from './middlewares/httpResponseErrorHandling';
 import { TarefasController } from './features/tarefas';
 import YAML from 'yamljs';
 import path from 'path';
@@ -49,6 +50,8 @@ createConnection({
 routingControllerUseContainer(Container);
 useExpressServer(app, {
     controllers: [TarefasController],
+    middlewares: [HttpResponseErrorHandler],
+    defaultErrorHandler: false,
 });
 
 app.listen(3030);
