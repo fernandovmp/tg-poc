@@ -113,7 +113,7 @@ components:
       example:
         id: 1
         titulo: Aguar as plantas
-        status: terminado
+        status: completo
     Tarefa-Dados:
       title: Tarefa-Dados
       description: ""
