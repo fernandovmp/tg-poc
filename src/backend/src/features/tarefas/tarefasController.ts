@@ -6,6 +6,7 @@ import {
     NotFoundError,
     Param,
     Post,
+    Put,
     Req,
     Res,
 } from 'routing-controllers';
@@ -54,6 +55,20 @@ export class TarefasController extends ControllerBase {
         const tarefa = await this.tarefasRepositorio.getById(id);
         if (!tarefa) throw new NotFoundError();
         await this.tarefasRepositorio.deleteById(id);
+        return this.noContent(response);
+    }
+
+    @Put('/:id')
+    async updateById(
+        @Param('id') id: number,
+        @Body() model: IDadosTarefaDto,
+        @Res() response: Response
+    ) {
+        const tarefaNaoExiste =
+            (await this.tarefasRepositorio.getById(id)) === undefined;
+        if (tarefaNaoExiste) throw new NotFoundError();
+        const tarefa: ITarefaDto = { id, ...model };
+        await this.tarefasRepositorio.save(tarefa);
         return this.noContent(response);
     }
 }
