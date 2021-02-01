@@ -4,14 +4,14 @@ import { CriarTarefaCasoDeUso } from '../../../../features/tarefas/casosDeUso/cr
 import { ExcecaoErroValidacao } from '../../../../exceptions/excecaoErroValidacao';
 import { TarefasRepositorio } from '../../../../features/tarefas/tarefasRepositorio';
 
-describe('tarefasController', () => {
+describe('criarTarefaCasoDeUso', () => {
     let createUseCase: CriarTarefaCasoDeUso;
     let tarefasRepositorio: TarefasRepositorio;
     beforeEach(() => {
         tarefasRepositorio = new TarefasRepositorio();
         createUseCase = new CriarTarefaCasoDeUso(tarefasRepositorio);
     });
-    it('should throw a validation error exception when the data sended is not valid', async () => {
+    it('deve lançar exceção quando os dados forem inválidos', async () => {
         const invalidData: IDadosTarefaDto = {
             status: 'completo',
             titulo: '',
@@ -21,7 +21,7 @@ describe('tarefasController', () => {
         );
     });
 
-    it('should return the created Todo with an id when send valid data', async () => {
+    it('deve retornar a tarefa criada com um id quando os dados forem válidos', async () => {
         const validData: IDadosTarefaDto = {
             status: 'completo',
             titulo: 'Teste',
