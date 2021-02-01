@@ -42,19 +42,19 @@ function criarResultadoDeValidacao(
 ): IResultadoValidacao {
     return {
         valido,
-        erros: mapErrors(erros?.errors ?? [], erros?.inner ?? []),
+        erros: mapearErros(erros?.errors ?? [], erros?.inner ?? []),
     };
 }
 
-function mapErrors(messages: string[], errors: yup.ValidationError[]) {
-    const size = Math.min(messages.length, errors.length);
-    const mappedErrors: IErroValidacao[] = [];
-    for (let i: number = 0; i < size; i++) {
-        mappedErrors.push({
-            campo: errors[i].path ?? '',
-            erro: errors[i].type ?? '',
-            mensagem: messages[i],
+function mapearErros(mensagens: string[], erros: yup.ValidationError[]) {
+    const tamanho = Math.min(mensagens.length, erros.length);
+    const errosMapeados: IErroValidacao[] = [];
+    for (let i: number = 0; i < tamanho; i++) {
+        errosMapeados.push({
+            campo: erros[i].path ?? '',
+            erro: erros[i].type ?? '',
+            mensagem: mensagens[i],
         });
     }
-    return mappedErrors;
+    return errosMapeados;
 }

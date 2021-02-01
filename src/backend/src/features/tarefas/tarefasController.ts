@@ -1,5 +1,4 @@
 import {
-    BadRequestError,
     Body,
     Delete,
     Get,
@@ -18,36 +17,36 @@ import { TarefasRepositorio } from './tarefasRepositorio';
 import { Request, Response } from 'express';
 import { ControllerBase } from '../controllerBase';
 import { validadorDadosTarefa } from './validacoes';
-import { ValidationErrorExcepetion } from '../../exceptions/validationErrorException';
-import { CreateUseCase } from './useCases/createUseCase';
+import { ExcecaoErroValidacao } from '../../exceptions/excecaoErroValidacao';
+import { CriarTarefaCasoDeUso } from './casosDeUso/criarTarefaCasoDeUso';
 
 @JsonController('/todos')
 export class TarefasController extends ControllerBase {
     constructor(
         @InjectRepository() private tarefasRepositorio: TarefasRepositorio,
-        private createUseCase: CreateUseCase
+        private criarTarefaCasoDeUso: CriarTarefaCasoDeUso
     ) {
         super();
     }
 
     @Get()
-    getAll(): Promise<ITarefaDto[]> {
-        return this.tarefasRepositorio.getAll();
+    obterTodos(): Promise<ITarefaDto[]> {
+        return this.tarefasRepositorio.obterTodos();
     }
 
     @Post()
-    async create(
+    async criar(
         @Body() model: IDadosTarefaDto,
         @Req() request: Request,
         @Res() response: Response
     ): Promise<ITarefaDto> {
-        const tarefa = await this.createUseCase.handle(model);
+        const tarefa = await this.criarTarefaCasoDeUso.executar(model);
         return this.created(request, response, tarefa, `/todos/${tarefa.id}`);
     }
 
     @Get('/:id')
-    async getById(@Param('id') id: number, @Res() response: Response) {
-        const tarefa = await this.tarefasRepositorio.getById(id);
+    async obterPeloId(@Param('id') id: number, @Res() response: Response) {
+        const tarefa = await this.tarefasRepositorio.obterPeloId(id);
         if (!tarefa) {
             throw new NotFoundError();
         }
@@ -55,25 +54,25 @@ export class TarefasController extends ControllerBase {
     }
 
     @Delete('/:id')
-    async deleteById(@Param('id') id: number, @Res() response: Response) {
-        const tarefa = await this.tarefasRepositorio.getById(id);
+    async deletarPeloId(@Param('id') id: number, @Res() response: Response) {
+        const tarefa = await this.tarefasRepositorio.obterPeloId(id);
         if (!tarefa) throw new NotFoundError();
-        await this.tarefasRepositorio.deleteById(id);
+        await this.tarefasRepositorio.deletarPeloId(id);
         return this.noContent(response);
     }
 
     @Put('/:id')
-    async updateById(
+    async atualizarPeloId(
         @Param('id') id: number,
         @Body() model: IDadosTarefaDto,
         @Res() response: Response
     ) {
         const resultadoValidacao = await validadorDadosTarefa(model);
         if (!resultadoValidacao.valido) {
-            throw new ValidationErrorExcepetion(resultadoValidacao.erros);
+            throw new ExcecaoErroValidacao(resultadoValidacao.erros);
         }
         const tarefaNaoExiste =
-            (await this.tarefasRepositorio.getById(id)) === undefined;
+            (await this.tarefasRepositorio.obterPeloId(id)) === undefined;
         if (tarefaNaoExiste) throw new NotFoundError();
         const tarefa: ITarefaDto = { id, ...model };
         await this.tarefasRepositorio.save(tarefa);

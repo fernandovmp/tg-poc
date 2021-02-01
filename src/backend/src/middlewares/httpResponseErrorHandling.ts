@@ -5,8 +5,8 @@ import {
 } from 'routing-controllers';
 import { Request, Response } from 'express';
 
+import { ExcecaoErroValidacao } from '../exceptions/excecaoErroValidacao';
 import { IErroValidacaoDto } from '@todo-list/shared';
-import { ValidationErrorExcepetion } from '../exceptions/validationErrorException';
 
 @Middleware({ type: 'after' })
 export class HttpResponseErrorHandler
@@ -19,11 +19,11 @@ export class HttpResponseErrorHandler
     ) {
         if (error instanceof NotFoundError) {
             response.status(error.httpCode).send(undefined);
-        } else if (error instanceof ValidationErrorExcepetion) {
+        } else if (error instanceof ExcecaoErroValidacao) {
             const responseBody: IErroValidacaoDto = {
                 status: 400,
                 mensagem: 'Ocorreu um mais erros de validação',
-                erros: error.validationErrors,
+                erros: error.errosValidacao,
             };
             response.status(400);
             response.send(responseBody);
