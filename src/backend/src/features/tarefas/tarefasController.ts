@@ -19,11 +19,13 @@ import { Request, Response } from 'express';
 import { ControllerBase } from '../controllerBase';
 import { validadorDadosTarefa } from './validacoes';
 import { ValidationErrorExcepetion } from '../../exceptions/validationErrorException';
+import { CreateUseCase } from './useCases/createUseCase';
 
 @JsonController('/todos')
 export class TarefasController extends ControllerBase {
     constructor(
-        @InjectRepository() private tarefasRepositorio: TarefasRepositorio
+        @InjectRepository() private tarefasRepositorio: TarefasRepositorio,
+        private createUseCase: CreateUseCase
     ) {
         super();
     }
@@ -39,12 +41,7 @@ export class TarefasController extends ControllerBase {
         @Req() request: Request,
         @Res() response: Response
     ): Promise<ITarefaDto> {
-        const resultadoValidacao = await validadorDadosTarefa(model);
-        if (!resultadoValidacao.valido) {
-            throw new ValidationErrorExcepetion(resultadoValidacao.erros);
-        }
-        const tarefa = { id: 0, ...model };
-        await this.tarefasRepositorio.add(tarefa);
+        const tarefa = await this.createUseCase.handle(model);
         return this.created(request, response, tarefa, `/todos/${tarefa.id}`);
     }
 
