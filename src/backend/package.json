@@ -5,8 +5,9 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "yarn tsc",
+    "build": "yarn tsc && cp -r src/wwwroot build/wwwroot",
     "start:dev": "nodemon --watch 'src/' --exec 'ts-node src/index.ts' -e ts",
+    "start": "ts-node src/index.ts",
     "test": "jest"
   },
   "dependencies": {

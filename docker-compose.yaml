@@ -1,0 +1,28 @@
+version: "3.4"
+services:
+  db:
+    build:
+      context: database
+    environment:
+      POSTGRES_PASSWORD: postgres1234
+      POSTGRES_DB: TodoList
+  webapi:
+    build:
+      context: .
+      dockerfile: src/backend/Dockerfile
+    environment:
+      PORT: 3030
+      TYPEORM_CONNECTION: "postgres"
+      TYPEORM_HOST: "db"
+      TYPEORM_PORT: 5432
+      TYPEORM_USERNAME: "postgres"
+      TYPEORM_PASSWORD: "postgres1234"
+      TYPEORM_DATABASE: "TodoList"
+      TYPEORM_ENTITIES: "build/entities/**/*.js"
+      TYPEORM_MIGRATIONS: "build/migration/**/*.js"
+      TYPEORM_LOGGING: "false"
+      TYPEORM_SYNCHRONIZE: "false"
+    ports:
+      - "3030:3030"
+    depends_on:
+      - db
