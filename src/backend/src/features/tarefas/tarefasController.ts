@@ -20,7 +20,7 @@ import { validadorDadosTarefa } from './validacoes';
 import { ExcecaoErroValidacao } from '../../exceptions/excecaoErroValidacao';
 import { CriarTarefaCasoDeUso } from './casosDeUso/criarTarefaCasoDeUso';
 
-@JsonController('/todos')
+@JsonController('/tarefa')
 export class TarefasController extends ControllerBase {
     constructor(
         @InjectRepository() private tarefasRepositorio: TarefasRepositorio,
@@ -41,7 +41,7 @@ export class TarefasController extends ControllerBase {
         @Res() response: Response
     ): Promise<ITarefaDto> {
         const tarefa = await this.criarTarefaCasoDeUso.executar(model);
-        return this.created(request, response, tarefa, `/todos/${tarefa.id}`);
+        return this.created(request, response, tarefa, `/tarefa/${tarefa.id}`);
     }
 
     @Get('/:id')
